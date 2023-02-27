@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\MailingListController;
+use App\Http\Controllers\SubscriberController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
@@ -23,17 +25,17 @@ Route::post('/login', [AuthController::class, 'login']);
 
 // Protected routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    // Route::post('/products', [ProductController::class, 'store']);
-    // Route::put('/products/{id}', [ProductController::class, 'update']);
-    // Route::delete('/products/{id}', [ProductController::class, 'destroy']);
+
+    Route::resource('subscribers', SubscriberController::class);
+    Route::resource('mailinglists', MailingListController::class);
+
     Route::post('/logout', [AuthController::class, 'logout']);
-});
 
-
-
-Route::post('/verify_token', function (Request $request) {
-    $token = PersonalAccessToken::findToken($request['api_token']);
-    $user = $token->tokenable;
-    $user->setAttribute('api_token', $request['api_token']);
-    return $user;
+    Route::post('/verify_token', function (Request $request) {
+        $token = PersonalAccessToken::findToken($request['api_token']);
+        Log::info($request['api_token']);
+        $user = $token->tokenable;
+        $user->setAttribute('api_token', $request['api_token']);
+        return $user;
+    });
 });
