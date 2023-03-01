@@ -33,7 +33,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::post('/verify_token', function (Request $request) {
         $token = PersonalAccessToken::findToken($request['api_token']);
-        Log::info($request['api_token']);
         $user = $token->tokenable;
         $user->setAttribute('api_token', $request['api_token']);
         return $user;

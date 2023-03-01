@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\MailingList;
 use App\Http\Requests\StoreMailingListRequest;
 use App\Http\Requests\UpdateMailingListRequest;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Http\Request;
 
 class MailingListController extends Controller
 {
@@ -13,7 +16,9 @@ class MailingListController extends Controller
      */
     public function index()
     {
-        $mailinglists = MailingList::all();
+        $perPage = (int) request()->perPage ??  10;
+        $mailinglists = MailingList::paginate($perPage);
+
         return response()->json($mailinglists);
     }
 
